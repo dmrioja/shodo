@@ -1,0 +1,16 @@
+linters:
+  enable:
+    - errcheck
+    - goconst
+    - gosec
+    - gosimple
+    - govet
+    - nilerr
+    - nilnil
+    # - nlreturn (It is too noisy for small functions)
+    - prealloc
+    - staticcheck
+    - unconvert
+    - unparam
+    - usestdlibvars
+    - unused

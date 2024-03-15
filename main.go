@@ -106,7 +106,11 @@ func generalReport(tags []*output.Tag) {
 
 	md = append(md, "```")
 
-	utils.WriteFile(fileName+"_SHODO.md", md)
+	// Deal with this error better later
+	if err := utils.WriteFile(fileName+"_SHODO.md", md); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
 func getTotalCommitsPerType(tag *output.Tag, label string) int64 {

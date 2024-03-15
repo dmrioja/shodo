@@ -19,6 +19,7 @@ func WriteReport(tagReport *output.Tag) error {
 
 func writeConventionalCommitDetail(tagReport *output.Tag) []string {
 
+	// nolint: prealloc
 	var md, mdConfig, mdPieChart []string
 	md = append(md, "``` mermaid")
 	mdConfig = append(mdConfig, "%%{init:{'theme':'base','themeVariables':{'pieTitleTextColor': '#fff','pieLegendTextColor': '#fff',")
