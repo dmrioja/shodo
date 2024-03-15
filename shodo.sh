@@ -75,4 +75,4 @@ do
             perl -wpe 's#"commits":\[]},\{#"commits":\[\{#g' > ../../data/$name/$tagName\_shodo_report.json
 done
 
-# go run ../../../main.go
+go run ../../../main.go -- $name
