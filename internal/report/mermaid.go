@@ -36,7 +36,7 @@ func grossChangesSankey(tagReport *output.Tag) (md []string) {
 	md = append(md, "sankey-beta")
 	md = append(md, "%% source,target,value")
 
-	for _, commitType := range tagReport.GetCommitsOrderedByNetChanges() {
+	for _, commitType := range tagReport.GetCommitsOrderedByGrossChanges() {
 		md = append(md, fmt.Sprintf("Gross changes,%s,%d", commitType.Label, commitType.GetGrossChanges()))
 	}
 	md = append(md, "```")
@@ -51,6 +51,9 @@ func AvgFilesChangedPerCommitType(tagReport *output.Tag) (md []string) {
 
 	// It would be interesting to draw this along time, to see how repository complexity changes over time
 	// See property title
+
+	// avgfiles modified / total files in the repository -> this could be an index to see:
+	// Is the repository well structured? How difficult it is to add new changes??
 
 	mdXAxis := "x-axis ["
 	bars := "bar ["

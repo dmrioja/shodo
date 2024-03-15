@@ -73,14 +73,17 @@ type Commit struct {
 	Author  string
 }
 
+// TODO: remove?
 func (cc *ConventionalCommit) GetNetChanges() float64 {
 	return math.Abs(float64(cc.Insertions - cc.Deletions))
 }
 
+// TODO: remove?
 func (cc *ConventionalCommit) GetGrossChanges() int64 {
 	return cc.Insertions + cc.Deletions
 }
 
+// TODO: remove?
 func (cc *ConventionalCommit) GetAvgFilesModified() float64 {
 	return float64(cc.FilesChanged) / float64(cc.TotalCommits)
 }
@@ -156,48 +159,38 @@ func (t *Tag) AddNewCommit(cmtType string, newCommit *input.Commit) {
 
 // Is this really necessary ?? (Seems like only for markdown)
 func (t *Tag) GetCommitsOrderedByQuantity() []*ConventionalCommit {
-	s := make([]*ConventionalCommit, 0, len(t.ConventionalCommits))
-
-	for _, c := range t.ConventionalCommits {
-		s = append(s, c)
-	}
-
-	sort.Slice(s, func(i, j int) bool {
-		return s[i].TotalCommits > s[j].TotalCommits
-	})
-
-	return s
+	return t.getCommitsOrderedBy(
+		func(cc *ConventionalCommit) float64 {
+			return float64(cc.TotalCommits)
+		},
+	)
 }
 
 func (t *Tag) GetCommitsOrderedByNetChanges() []*ConventionalCommit {
-	s := make([]*ConventionalCommit, 0, len(t.ConventionalCommits))
-
-	for _, c := range t.ConventionalCommits {
-		s = append(s, c)
-	}
-
-	sort.Slice(s, func(i, j int) bool {
-		return s[i].GetNetChanges() > s[j].GetNetChanges()
-	})
-
-	return s
+	return t.getCommitsOrderedBy(
+		func(cc *ConventionalCommit) float64 {
+			return math.Abs(float64(cc.Insertions - cc.Deletions))
+		},
+	)
 }
 
 func (t *Tag) GetCommitsOrderedByGrossChanges() []*ConventionalCommit {
-	s := make([]*ConventionalCommit, 0, len(t.ConventionalCommits))
-
-	for _, c := range t.ConventionalCommits {
-		s = append(s, c)
-	}
-
-	sort.Slice(s, func(i, j int) bool {
-		return s[i].GetGrossChanges() > s[j].GetGrossChanges()
-	})
-
-	return s
+	return t.getCommitsOrderedBy(
+		func(cc *ConventionalCommit) float64 {
+			return float64(cc.Insertions + cc.Deletions)
+		},
+	)
 }
 
 func (t *Tag) GetCommitsOrderedByAvgFilesModified() []*ConventionalCommit {
+	return t.getCommitsOrderedBy(
+		func(cc *ConventionalCommit) float64 {
+			return float64(cc.FilesChanged) / float64(cc.TotalCommits)
+		},
+	)
+}
+
+func (t *Tag) getCommitsOrderedBy(criteria func(*ConventionalCommit) float64) []*ConventionalCommit {
 	s := make([]*ConventionalCommit, 0, len(t.ConventionalCommits))
 
 	for _, c := range t.ConventionalCommits {
@@ -205,20 +198,8 @@ func (t *Tag) GetCommitsOrderedByAvgFilesModified() []*ConventionalCommit {
 	}
 
 	sort.Slice(s, func(i, j int) bool {
-		return s[i].GetAvgFilesModified() > s[j].GetAvgFilesModified()
+		return criteria(s[i]) > criteria(s[j])
 	})
 
 	return s
 }
-
-// func (t *Tag) getCommitsOrderedBy(criteria func(i, j int) bool) []*ConventionalCommit {
-// s := make([]*ConventionalCommit, 0, len(t.ConventionalCommits))
-
-// for _, c := range t.ConventionalCommits {
-// s = append(s, c)
-// }
-
-// sort.Slice(s, criteria)
-
-// return s
-// }
