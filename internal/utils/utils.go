@@ -1,11 +1,35 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"runtime"
+	"shodo/internal/input"
 	"strings"
 )
+
+func ReadFile(filePath string) (*input.Tag, error) {
+
+	jsonFile, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer jsonFile.Close()
+
+	bytes, err := io.ReadAll(jsonFile)
+	if err != nil {
+		return nil, err
+	}
+
+	var model input.Tag
+	if err := json.Unmarshal(bytes, &model); err != nil {
+		return nil, err
+	}
+
+	return &model, nil
+}
 
 func WriteFile(fileName string, markdown []string) error {
 	file, err := os.Create(fmt.Sprintf("output/%s", fileName))

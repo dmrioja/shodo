@@ -43,7 +43,7 @@ func main() {
 func processFile(fileName string) *output.Tag {
 
 	// TODO: improve this later. I don't feel like doing it now
-	tagInput, err := input.ReadFile(filePath + fileName)
+	tagInput, err := utils.ReadFile(filePath + fileName)
 	if err != nil {
 		fmt.Printf("Error reading input file [%s]: %s", fileName, err)
 		os.Exit(1)
