@@ -3,41 +3,20 @@ package markdown
 import (
 	"fmt"
 	"shodo/internal/output"
+	"strings"
 )
 
 func ChangesSankey(tagReport *output.Tag) (md []string) {
-	md = append(md, "<div class=\"changes-wrapper\">")
-	md = append(md, "<div class=\"gross-changes\">\n")
-	md = append(md, grossChangesSankey(tagReport)...)
-	md = append(md, "\n</div>")
-	md = append(md, "<div class=\"net-changes\">\n")
-	md = append(md, netChangesSankey(tagReport)...)
-	md = append(md, "\n</div>")
-	md = append(md, "</div>")
-
-	return
-}
-
-func netChangesSankey(tagReport *output.Tag) (md []string) {
 	md = append(md, "```mermaid")
+	md = append(md, "%%{init:{\"sankey\":{\"nodeAlignment\":\"left\"}}}%%")
 	md = append(md, "sankey-beta")
-	md = append(md, "%% source,target,value")
 
 	for _, commitType := range tagReport.GetCommitsOrderedByNetChanges() {
-		md = append(md, fmt.Sprintf("Net changes,%s,%.0f", commitType.Label, commitType.GetNetChanges()))
-	}
-	md = append(md, "```")
-
-	return md
-}
-
-func grossChangesSankey(tagReport *output.Tag) (md []string) {
-	md = append(md, "```mermaid")
-	md = append(md, "sankey-beta")
-	md = append(md, "%% source,target,value")
-
-	for _, commitType := range tagReport.GetCommitsOrderedByGrossChanges() {
-		md = append(md, fmt.Sprintf("Gross changes,%s,%d", commitType.Label, commitType.GetGrossChanges()))
+		md = append(md, fmt.Sprintf("Gross changes,%s,%d", strings.ToUpper(commitType.Label), commitType.GetGrossChanges()))
+		md = append(md, fmt.Sprintf("%s,%s,%.0f", strings.ToUpper(commitType.Label), commitType.Label, commitType.GetNetChanges()))
+		if commitType.GetNetChanges() != 0 {
+			md = append(md, fmt.Sprintf("%s,%s,%.0f", commitType.Label, "Net changes", commitType.GetNetChanges()))
+		}
 	}
 	md = append(md, "```")
 
@@ -72,18 +51,6 @@ func AvgFilesChangedPerCommitType(tagReport *output.Tag) (md []string) {
 	md = append(md, bars)
 
 	md = append(md, "```")
-
-	return
-}
-
-func Styles() (md []string) {
-	md = append(md, "<style>")
-	md = append(md, ".changes-wrapper{display:inline-block;}")
-	md = append(md, ".gross-changes{display:block;}")
-	md = append(md, ".net-changes{display:none;}")
-	md = append(md, ".changes-wrapper:hover .gross-changes{display:none;}")
-	md = append(md, ".changes-wrapper:hover .net-changes{display:block;}")
-	md = append(md, "</style>")
 
 	return
 }

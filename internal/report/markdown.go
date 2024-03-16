@@ -59,10 +59,6 @@ func writeConventionalCommitDetail(tagReport *output.Tag) []string {
 
 	md = append(md, ChangesSankey(tagReport)...)
 	md = append(md, AvgFilesChangedPerCommitType(tagReport)...)
-	md = append(md, Styles()...)
-	//md = append(md, AvgFilesChangedPerCommitType(tagReport)...)
-
-	//md = append(md, fmt.Sprintf())
 
 	return md
 }

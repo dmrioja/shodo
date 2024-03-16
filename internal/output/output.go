@@ -175,14 +175,6 @@ func (t *Tag) GetCommitsOrderedByNetChanges() []*ConventionalCommit {
 	)
 }
 
-func (t *Tag) GetCommitsOrderedByGrossChanges() []*ConventionalCommit {
-	return t.getCommitsOrderedBy(
-		func(cc *ConventionalCommit) float64 {
-			return float64(cc.Insertions + cc.Deletions)
-		},
-	)
-}
-
 func (t *Tag) GetCommitsOrderedByAvgFilesModified() []*ConventionalCommit {
 	return t.getCommitsOrderedBy(
 		func(cc *ConventionalCommit) float64 {
