@@ -10,7 +10,7 @@ import (
 func WriteReport(tagReport *output.Tag) error {
 
 	var md []string
-	md = append(md, fmt.Sprintf("# %s", tagReport.Name))
+	md = append(md, fmt.Sprintf("# %s ... %s", tagReport.LastVersion, tagReport.Name))
 
 	md = append(md, writeConventionalCommitDetail(tagReport)...)
 	// TODO: manage errors better

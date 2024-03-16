@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"shodo/internal/input"
 	"shodo/internal/output"
 	markdown "shodo/internal/report"
 	"shodo/internal/utils"
 	"sort"
+	"strings"
 
 	"github.com/hashicorp/go-version"
 )
@@ -16,6 +18,24 @@ var fileName string = os.Args[2]
 var filePath string = fmt.Sprintf("../../data/%s/", fileName)
 
 func main() {
+
+	files := readFiles()
+	tags := make([]*output.Tag, 0, len(files))
+	for index, file := range files {
+		// TODO: deal better with first version
+		previousVersion := "v0.1.0"
+		if index != 0 {
+			previousVersion = getVersion(files[index-1].Name())
+		}
+		tags = append(tags, processFile(file.Name(), previousVersion))
+	}
+
+	generalReport(tags)
+
+	os.Exit(0)
+}
+
+func readFiles() (tagFiles []fs.FileInfo) {
 
 	f, err := os.Open(filePath)
 	if err != nil {
@@ -29,18 +49,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	tags := make([]*output.Tag, 0, len(files))
-	for _, file := range files {
-		// TODO order tags or order files first?
-		tags = append(tags, processFile(file.Name()))
-	}
+	sort.Slice(files, func(i, j int) bool {
+		vi, _ := version.NewVersion(getVersion(files[i].Name()))
+		vj, _ := version.NewVersion(getVersion(files[j].Name()))
 
-	generalReport(tags)
+		return vi.LessThan(vj)
+	})
 
-	os.Exit(0)
+	return files
 }
 
-func processFile(fileName string) *output.Tag {
+func processFile(fileName, previousVersion string) *output.Tag {
 
 	// TODO: improve this later. I don't feel like doing it now
 	tagInput, err := utils.ReadFile(filePath + fileName)
@@ -49,7 +68,7 @@ func processFile(fileName string) *output.Tag {
 		os.Exit(1)
 	}
 
-	tagReport := generateTagReport(tagInput)
+	tagReport := generateTagReport(tagInput, previousVersion)
 
 	if err := markdown.WriteReport(tagReport); err != nil {
 		fmt.Println(err)
@@ -59,11 +78,12 @@ func processFile(fileName string) *output.Tag {
 	return tagReport
 }
 
-func generateTagReport(input *input.Tag) *output.Tag {
+func generateTagReport(input *input.Tag, previousVersion string) *output.Tag {
 	tag := &output.Tag{
-		Name: input.Name,
-		Type: input.Type,
-		Hash: input.Hash,
+		Name:        input.Name,
+		Type:        input.Type,
+		Hash:        input.Hash,
+		LastVersion: previousVersion,
 	}
 
 	for _, commit := range input.Commits {
@@ -118,4 +138,15 @@ func getTotalCommitsPerType(tag *output.Tag, label string) int64 {
 		return commitType.TotalCommits
 	}
 	return 0
+}
+
+func getVersion(tagFileName string) string {
+	v, found := strings.CutSuffix(tagFileName, "_shodo_report.json")
+
+	if !found {
+		fmt.Printf("Error extracting version from file %s\n", tagFileName)
+		os.Exit(1)
+	}
+
+	return v
 }

@@ -37,9 +37,10 @@ type Report struct {
 // }
 
 type Tag struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
-	Hash string `json:"hash"`
+	Name        string `json:"name"`
+	Type        string `json:"type"`
+	Hash        string `json:"hash"`
+	LastVersion string
 
 	TotalConventionalCommits int
 	TotalNetChanges          int
