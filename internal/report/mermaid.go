@@ -46,6 +46,7 @@ func grossChangesSankey(tagReport *output.Tag) (md []string) {
 
 func AvgFilesChangedPerCommitType(tagReport *output.Tag) (md []string) {
 	md = append(md, "\n```mermaid")
+	md = append(md, "%%{init:{\"themeVariables\":{\"xyChart\":{\"backgroundColor\":\"transparent\"}}}}%%")
 	md = append(md, "xychart-beta")
 	md = append(md, "title \"Avg Files modified per commit type\"")
 
