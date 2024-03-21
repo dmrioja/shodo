@@ -22,7 +22,7 @@ func writeConventionalCommitDetail(tagReport *output.Tag) []string {
 	// nolint: prealloc
 	var md, mdConfig, mdPieChart []string
 	md = append(md, "``` mermaid")
-	mdConfig = append(mdConfig, "%%{init:{'theme':'base','themeVariables':{'pieTitleTextColor': '#fff','pieLegendTextColor': '#fff',")
+	mdConfig = append(mdConfig, "%%{init:{'themeVariables':{")
 
 	// TODO: I'm assuming ConventionalCommits map is never empty, which is not a clever assumption
 	mdPieChart = append(mdPieChart, fmt.Sprintf("pie showData title Number of commits: %d", tagReport.GetTotalCommits()))
