@@ -19,12 +19,10 @@ type Tag struct {
 }
 
 type Commit struct {
-	Hash        string    `json:"hash"`
-	Author      string    `json:"author"`
-	AuthorEmail string    `json:"authorEmail"`
-	Date        string    `json:"date"`
-	Message     string    `json:"message"`
-	Changes     []*Change `json:"changes"`
+	Hash    string    `json:"hash"`
+	Date    string    `json:"date"`
+	Message string    `json:"message"`
+	Changes []*Change `json:"changes"`
 }
 
 type Change struct {

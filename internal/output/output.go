@@ -71,7 +71,6 @@ type ConventionalCommit struct {
 type Commit struct {
 	Message string
 	Date    string
-	Author  string
 }
 
 // TODO: remove?
@@ -115,7 +114,6 @@ func (t *Tag) NewCommit(newCommit *input.Commit) {
 		ncc.Commits = append(ncc.Commits, &Commit{
 			Message: newCommit.Message,
 			Date:    newCommit.Date,
-			Author:  newCommit.Author,
 		})
 	}
 }

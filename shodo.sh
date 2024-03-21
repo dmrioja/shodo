@@ -6,7 +6,7 @@ function get_commits_per_tag() {
         # Maybe --no-merges could be appropriate
         commits_per_tag=$(git log $1..$2 \
             --numstat \
-            --pretty=format:'{"hash":"%H","author":"%aN","authorEmail":"%aE","date":"%ad",%nMSG_TOKEN: %s' \
+            --pretty=format:'{"hash":"%H","date":"%ad",%nMSG_TOKEN: %s' \
             $@ | \
             perl -lawne '
                 if ( not defined $F[0] ) {
